@@ -1,16 +1,36 @@
 #include <iostream>
+#include <fstream>
 
-// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-int main() {
-    // TIP Press <shortcut actionId="RenameElement"/> when your caret is at the <b>lang</b> variable name to see how CLion can help you rename it.
-    auto lang = "C++";
-    std::cout << "Hello and welcome to " << lang << "!\n";
+using namespace std;// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+int main()
+{
+    ifstream iFile;
+    const int MAX_SIZE = 101;
+    string line = "", first = "", second = "";
+    int location = 0, readcount = 0;
 
-    for (int i = 1; i <= 5; i++) {
-        // TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        std::cout << "i = " << i << std::endl;
+    iFile.open("spiralka.csv");
+
+    float spiralka[MAX_SIZE][3];
+    while (getline(iFile, line) && readcount < MAX_SIZE)
+    {
+        location = line.find(',');
+        first = line.substr(0, location);
+        line = line.substr(location + 1, line.length());
+
+        spiralka[readcount][0] = stof(first);
+        spiralka[readcount][1] = stof(line);
+        spiralka[readcount][2] = 9;
+
+
+        readcount++;
     }
 
+
+
+
+
+
+
     return 0;
-    // TIP See CLion help at <a href="https://www.jetbrains.com/help/clion/">jetbrains.com/help/clion/</a>. Also, you can try interactive lessons for CLion by selecting 'Help | Learn IDE Features' from the main menu.
 }
