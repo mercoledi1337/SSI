@@ -3,10 +3,14 @@ project(SSI)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(SSI main.cpp
-        gnuplot_iostream.h)
+# Vcpkg toolchain
+set(CMAKE_TOOLCHAIN_FILE "C:/Users/mrser/Documents/VCPKG/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE)
 
-find_package(Boost REQUIRED COMPONENTS iostreams)
-find_package(Boost REQUIRED COMPONENTS iostreams filesystem)
-target_link_libraries(SSI PRIVATE Boost::iostreams)
-target_link_libraries(SSI PRIVATE Boost::iostreams Boost::filesystem)
+# Wyszukiwanie Boost
+find_package(Boost REQUIRED CONFIG COMPONENTS iostreams filesystem system)
+
+# Tworzymy exe
+add_executable(SSI main.cpp gnuplot_iostream.h)
+
+# Linkowanie bibliotek Boost
+target_link_libraries(SSI PRIVATE Boost::iostreams Boost::filesystem Boost::system)
