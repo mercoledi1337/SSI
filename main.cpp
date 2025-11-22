@@ -152,7 +152,6 @@ int main()
         spiralka.push_back({stof(first), stof(line),group});
         readcount++;
     }
-
     startArray(V); //choosing random groups
 
     euclides(spiralka, V, iters, M);
@@ -170,7 +169,6 @@ int main()
     gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
     gp.send1d(spiralka);  // pierwsza seria
 
-
     // Wysyłanie po iteracji do gnuplota
     for (int j = 2; j < iteration + 1; j++) {
         countGroups(spiralka_po, groupSize);
@@ -183,7 +181,9 @@ int main()
                 groups[i][2] = 5;
                 spiralka_po.push_back(groups[i]);
             }
-        } else {
+        }
+        else
+            {
             for (int i = 0; i < M; i++) {
 
                 spiralka_po[101+i][0] = groups[i][0];
@@ -203,8 +203,6 @@ int main()
             gp << "set title 'Wykres spiralka " << j << " itetracjach'\n";
             gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
             gp.send1d(spiralka_po);  // pierwsza seria
-
-
         }
     }
 

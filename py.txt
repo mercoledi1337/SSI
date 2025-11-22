@@ -1,0 +1,77 @@
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from PIL import Image
+import os
+
+# zmienne
+fileName = 'sample.pdf'
+documentTitle = 'Sample PDF'
+title = 'K-mean'
+image_paths = [
+    r'D:\SSI\wykres4.png',
+    r'D:\SSI\wykres10.png'
+]
+text_file_path = r'D:\SSI\wykresy.txt'
+
+PAGE_WIDTH = 595   # A4 width w punktach
+PAGE_HEIGHT = 842  # A4 height w punktach
+MARGIN = 40        # margines od krawędzi
+
+# tworzenie PDF
+pdf = canvas.Canvas(fileName)
+pdf.setTitle(documentTitle)
+
+# --- Funkcja do dodawania nagłówka (tytuł tylko na pierwszej stronie) ---
+def draw_header(first_page=True):
+    if first_page:
+        pdf.setFont("Helvetica-Bold", 24)
+        pdf.drawCentredString(PAGE_WIDTH / 2, PAGE_HEIGHT - 50, title)
+        pdf.setLineWidth(2)
+        pdf.line(MARGIN, PAGE_HEIGHT - 70, PAGE_WIDTH - MARGIN, PAGE_HEIGHT - 70)
+
+# rysowanie nagłówka na pierwszej stronie
+draw_header(first_page=True)
+
+# --- Wczytanie tekstu ---
+lines = []
+if os.path.exists(text_file_path):
+    with open(text_file_path, 'r', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+# ustawienia tekstu
+text_start_y = PAGE_HEIGHT - 100
+line_height = 14  # wysokość jednej linijki w punktach
+pdf.setFont("Courier", 12)
+pdf.setFillColor(colors.black)
+
+# rysowanie tekstu linia po linii
+text_obj = pdf.beginText(MARGIN, text_start_y)
+for line in lines:
+    text_obj.textLine(line)
+pdf.drawText(text_obj)
+
+# pozycja Y dla pierwszego obrazka pod tekstem
+text_height = len(lines) * line_height
+current_y = text_start_y - text_height - 20  # 20 pts odstępu pod tekstem
+
+# --- Dodawanie obrazków ---
+for idx, path in enumerate(image_paths):
+    img = Image.open(path)
+    orig_width, orig_height = img.size
+    new_width = 400
+    new_height = int(orig_height * (new_width / orig_width))
+
+    # sprawdzenie czy obrazek zmieści się na stronie
+    if current_y - new_height < MARGIN:
+        pdf.showPage()  # nowa strona
+        current_y = PAGE_HEIGHT - MARGIN  # resetujemy początek obrazka od góry
+        draw_header(first_page=False)     # brak tytułu na nowych stronach
+
+    x_position = (PAGE_WIDTH - new_width) / 2  # centrowanie obrazka
+    pdf.drawInlineImage(path, x=x_position, y=current_y - new_height, width=new_width, height=new_height)
+
+    current_y = current_y - new_height - 20  # przesunięcie dla kolejnego obrazka
+
+# zapis PDF
+pdf.save()
+print(f"PDF '{fileName}' created successfully!")
