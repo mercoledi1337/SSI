@@ -113,13 +113,12 @@ void showMinMax(vector<vector<float>> spiralka_po, float g) {
             }
         }
     }
-    cout << maxX << " X " << minX << " x " << maxY << " Y " << minY << " y " << " dla grupy " << g << endl;
+    cout << maxX << " X max " << minX << " x min " << maxY << " Y max " << minY << " y min " << " dla grupy " << g << endl;
 }
 
 float* startArray(float V[]) {
     for (int i = 0; i < M; i++) {
         V[i] = rand() % 102;
-        cout << V[i] << endl;
     }
     return V;
 }
@@ -136,7 +135,8 @@ int main()
     ifstream iFile("../spiralka.csv");
     srand (time(NULL)); //seting seed
 
-
+    ofstream outFile("..\\wykresy.txt");
+    cout.rdbuf(outFile.rdbuf());
 
     if (!iFile.is_open()) {
         cerr << "Nie można otworzyc pliku spiralka.csv" << endl;
@@ -169,8 +169,6 @@ int main()
     gp << "set title 'Wykres spiralka'\n";
     gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
     gp.send1d(spiralka);  // pierwsza seria
-    cout << "Wykres wyslany do gnuplota. Nacisnij Enter, aby zakonczyc..." << endl;
-    cin.get();
 
 
     // Wysyłanie po iteracji do gnuplota
@@ -195,21 +193,21 @@ int main()
         }
 
         if (j == 4 || j == 10) {
+            cout << " ITERACJA "  << j << endl;
             for (int i = 0; i < M; i++) {
                 showMinMax(spiralka_po,i);
                 cout << groups[i][0] << " " << groups[i][1] << " srodek grupy " << i << "\n" << endl;
             }
-
             gp << "set term pngcairo size 800,600 enhanced font 'Arial,12' background '#D3D3D3'\n";
-            gp << "set output 'D:\\SSI\\wykres" << j << ".png'\n"; // nazwa pliku wyjściowego
+            gp << "set output '..\\wykres" << j << ".png'\n"; // nazwa pliku wyjściowego
             gp << "set title 'Wykres spiralka " << j << " itetracjach'\n";
             gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
             gp.send1d(spiralka_po);  // pierwsza seria
-            cout << "Wykres wyslany do gnuplota. Nacisnij Enter, aby zakonczyc..." << endl;
 
-            cin.get();
+
         }
-        int ret = system("python D:\\pythonProject\\main.py");
     }
+
+    outFile.close();
     return 0;
 }

@@ -1,0 +1,20 @@
+ ITERACJA 4
+1.3375 X max -0.0824 x min 1.0724 Y max -0.7834 y min  dla grupy 0
+0.88003 0.430757 srodek grupy 0
+
+1.085 X max -1.4969 x min -0.7615 Y max -1.5564 y min  dla grupy 1
+-0.0585757 -1.24406 srodek grupy 1
+
+0.0322 X max -1.779 x min 1.9929 Y max -0.6608 y min  dla grupy 2
+-1.24231 0.814534 srodek grupy 2
+
+ ITERACJA 10
+1.3375 X max -0.0824 x min 1.0724 Y max -0.8127 y min  dla grupy 0
+0.870995 0.345005 srodek grupy 0
+
+0.9918 X max -1.5441 x min -0.6479 Y max -1.5564 y min  dla grupy 1
+-0.294439 -1.23427 srodek grupy 1
+
+0.0322 X max -1.779 x min 1.9929 Y max -0.4747 y min  dla grupy 2
+-1.25429 0.955981 srodek grupy 2
+
