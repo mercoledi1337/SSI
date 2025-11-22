@@ -162,11 +162,17 @@ int main()
             }
         } else {
             for (int i = 0; i < M; i++) {
-                groups[i][2] = 5;
+
+                spiralka_po[101+i][0] = groups[i][0];
+                spiralka_po[101+i][1] = groups[i][1];
                 spiralka_po[101+i][2] = 5;
             }
         }
+
         if (j == 4 || j == 10) {
+            for (int i = 0; i < M; i++) {
+                cout << groups[i][0] << " " << groups[i][1] << " srodki po " << i << " iteracjach" << endl;
+            }
             gp << "set term wxt "  << j  << "\n";
             gp << "set title 'Wykres spiralka'\n";
             gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
