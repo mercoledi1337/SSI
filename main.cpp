@@ -1,14 +1,15 @@
 #include <iostream>
 #include <fstream>
-#include <time.h>
+#include <ctime>
 #include <random>
 #include <cmath>
 #include "gnuplot_iostream.h"
 #include <numeric>
 
-const int M = 4;
+const int M = 3;
 const int iters = 101;
 const int MAX_SIZE = 101;
+const int iteration = 10;
 
 using namespace std;
 
@@ -53,7 +54,6 @@ void countGroups(vector<vector<float>>& spiralka_po, vector<int>& groupSize)
     for (int i = 0; i < M; i++)
     {
         int var = 0;
-
         for (int j = 0; j < 101; ++j) {
             var += count(spiralka_po[j].begin(), spiralka_po[j].end(), i);
         }
@@ -90,25 +90,33 @@ void calcMean(vector<vector<float>> spiralka_po, vector<vector<float>>& groups, 
         }
     }
 }
+
+float* startArray(float V[]) {
+    for (int i = 0; i < M; i++) {
+        V[i] = rand() % 102;
+        cout << V[i] << endl;
+    }
+    return V;
+}
+
 int main()
 {
-    float V[4]; // mean
-    vector<int> groupSize;
-
+    float V[M]; //array for random start
+    vector<int> groupSize; //size of groups for mean
     vector<vector<float>> spiralka;
     vector<vector<float>> groups;
-
-    srand (time(NULL));
+    string line = "", first = "", second = ""; // reading csv rariables
+    int location = 0, readcount = 0;
     Gnuplot gp("D:/gnuplot/bin/gnuplot.exe");
-
-    //reading csv part
     ifstream iFile("../spiralka.csv");
+    srand (time(NULL)); //seting seed
+
+
+
     if (!iFile.is_open()) {
-        cerr << "Nie można otworzyć pliku spiralka.csv" << endl;
+        cerr << "Nie można otworzyc pliku spiralka.csv" << endl;
         return 1;
     }
-    string line = "", first = "", second = "";
-    int location = 0, readcount = 0;
 
     while (getline(iFile, line) && readcount < MAX_SIZE)
     {
@@ -120,11 +128,7 @@ int main()
         readcount++;
     }
 
-    // choosing random center of groups
-    for (int i = 0; i < M; i++) {
-        V[i] = rand() % 102;
-        cout << V[i] << endl;
-    }
+    startArray(V); //choosing random groups
 
     euclides(spiralka, V, iters, M);
 
@@ -134,7 +138,6 @@ int main()
     }
 
     auto spiralka_po = spiralka; // kopia danych
-
 
     // Wysyłanie startowego do gnuplota
     gp << "set term wxt 1\n";
@@ -146,7 +149,7 @@ int main()
 
 
     // Wysyłanie po iteracji do gnuplota
-    for (int j = 2; j < 5; j++) {
+    for (int j = 2; j < iteration + 1; j++) {
         countGroups(spiralka_po, groupSize);
         calcMean(spiralka_po,groups,groupSize);
         euclidesForKMean(spiralka_po, groups, iters, M);
@@ -163,13 +166,14 @@ int main()
                 spiralka_po[101+i][2] = 5;
             }
         }
-
-        gp << "set term wxt "  << j  << "\n";
-        gp << "set title 'Wykres spiralka'\n";
-        gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
-        gp.send1d(spiralka_po);  // pierwsza seria
-        cout << "Wykres wyslany do gnuplota. Nacisnij Enter, aby zakonczyc..." << endl;
-        cin.get();
+        if (j == 4 || j == 10) {
+            gp << "set term wxt "  << j  << "\n";
+            gp << "set title 'Wykres spiralka'\n";
+            gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
+            gp.send1d(spiralka_po);  // pierwsza seria
+            cout << "Wykres wyslany do gnuplota. Nacisnij Enter, aby zakonczyc..." << endl;
+            cin.get();
+        }
     }
     return 0;
 }
