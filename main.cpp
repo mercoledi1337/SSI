@@ -5,6 +5,7 @@
 #include <cmath>
 #include "gnuplot_iostream.h"
 #include <numeric>
+#include <cstdlib>
 
 const int M = 3;
 const int iters = 101;
@@ -91,6 +92,30 @@ void calcMean(vector<vector<float>> spiralka_po, vector<vector<float>>& groups, 
     }
 }
 
+void showMinMax(vector<vector<float>> spiralka_po, float g) {
+    float maxX = -10;
+    float minX = 10;
+    float maxY = -10;
+    float minY = 10;
+    for (int i = 0; i < spiralka_po.size(); i++) {
+        if (spiralka_po[i][2] == g) {
+            if (spiralka_po[i][0] > maxX) {
+                maxX = spiralka_po[i][0];
+            }
+            if (spiralka_po[i][1] > maxY) {
+                maxY = spiralka_po[i][1];
+            }
+            if (spiralka_po[i][0] < minX) {
+                minX = spiralka_po[i][0];
+            }
+            if (spiralka_po[i][1] < minY) {
+                minY = spiralka_po[i][1];
+            }
+        }
+    }
+    cout << maxX << " X " << minX << " x " << maxY << " Y " << minY << " y " << " dla grupy " << g << endl;
+}
+
 float* startArray(float V[]) {
     for (int i = 0; i < M; i++) {
         V[i] = rand() % 102;
@@ -171,15 +196,20 @@ int main()
 
         if (j == 4 || j == 10) {
             for (int i = 0; i < M; i++) {
-                cout << groups[i][0] << " " << groups[i][1] << " srodki po " << i << " iteracjach" << endl;
+                showMinMax(spiralka_po,i);
+                cout << groups[i][0] << " " << groups[i][1] << " srodek grupy " << i << "\n" << endl;
             }
-            gp << "set term wxt "  << j  << "\n";
-            gp << "set title 'Wykres spiralka'\n";
+
+            gp << "set term pngcairo size 800,600 enhanced font 'Arial,12' background '#D3D3D3'\n";
+            gp << "set output 'D:\\SSI\\wykres" << j << ".png'\n"; // nazwa pliku wyjściowego
+            gp << "set title 'Wykres spiralka " << j << " itetracjach'\n";
             gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
             gp.send1d(spiralka_po);  // pierwsza seria
             cout << "Wykres wyslany do gnuplota. Nacisnij Enter, aby zakonczyc..." << endl;
+
             cin.get();
         }
+        int ret = system("python D:\\pythonProject\\main.py");
     }
     return 0;
 }
