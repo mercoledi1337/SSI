@@ -5,7 +5,10 @@
 #include <cmath>
 #include "gnuplot_iostream.h"
 #include <numeric>
-#include <random>
+
+const int M = 4;
+const int iters = 101;
+const int MAX_SIZE = 101;
 
 using namespace std;
 
@@ -31,7 +34,7 @@ void euclidesForKMean(vector<vector<float>>& spiralka_po, vector<vector<float>> 
 {
     for (int s = 0; s < iters; s++)
     {
-        float tmpShortest = sqrt(pow((spiralka_po[s][0] - groups[0][0]),2) + pow((spiralka_po[s][1] - groups[0][0]),2));
+        float tmpShortest = sqrt(pow((spiralka_po[s][0] - groups[0][0]),2) + pow((spiralka_po[s][1] - groups[0][1]),2));
         spiralka_po[s][2] = groups[0][2];
         for (int i = 0; i < M; i++)
         {
@@ -48,11 +51,9 @@ void euclidesForKMean(vector<vector<float>>& spiralka_po, vector<vector<float>> 
 
 int main()
 {
-    const int M = 4;
-    const int iters = 101;
     float V[4]; // mean
     int groupSize[4];
-    const int MAX_SIZE = 101;
+
     vector<vector<float>> spiralka;
     vector<vector<float>> groups;
 
@@ -68,8 +69,6 @@ int main()
     string line = "", first = "", second = "";
     int location = 0, readcount = 0;
 
-
-
     while (getline(iFile, line) && readcount < MAX_SIZE)
     {
         float group = readcount%4; // temporary colour
@@ -77,10 +76,8 @@ int main()
         first = line.substr(0, location);
         line = line.substr(location + 1, line.length());
         spiralka.push_back({stof(first), stof(line),group});
-
         readcount++;
     }
-
 
     // choosing random center of groups
     for (int i = 0; i < M; i++) {
@@ -95,15 +92,12 @@ int main()
         spiralka[V[i]][2] = 5;
     }
 
-
     auto spiralka_po = spiralka; // kopia danych
     gp << "set multiplot layout 1,2 title 'K-Means'\n";
     // Wysyłanie do gnuplota
     gp << "set title 'Wykres spiralka'\n";
     gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
     gp.send1d(spiralka);  // pierwsza seria
-
-
 
     //find size of each group then loop inside
     for (int i = 0; i < M; i++)
@@ -114,7 +108,6 @@ int main()
         }
         groupSize[i] = var;
     }
-
 
     //looping in groups
     for (int i = 0; i < M; i++) { // looping by groups
@@ -136,7 +129,6 @@ int main()
 
     euclidesForKMean(spiralka_po, groups, iters, M);
 
-
     //coloring centers;
     for (int i = 0; i < M; i++) {
         groups[i][2] = 5;
@@ -147,8 +139,6 @@ int main()
     gp << "set title 'Wykres spiralka Po'\n";
     gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
     gp.send1d(spiralka_po);  // druga seria
-
-
     cout << "Wykres wysłany do gnuplota. Naciśnij Enter, aby zakończyć..." << endl;
     cin.get();
 
