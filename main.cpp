@@ -310,7 +310,6 @@ int main() {
         }
         //euclides//
 
-
             odl_mean(spiralka_odl_po, groups_odl, iters, Mo);
             countGroups_odl(spiralka_odl_po, groupSize_odl);
             calcMean_odl(spiralka_odl_po,groups_odl,groupSize_odl);
@@ -345,7 +344,7 @@ int main() {
                 gp << "plot '-' using 1:2:3 with points pt 7 lc palette notitle\n";
                 gp.send1d(spiralka_po);  // pierwsza seria
             }
-            if (j == 10) {
+            if (j == 4 || j == 10) {
                 cout << " ITERACJA "  << j << endl;
                 for (int i = 0; i < Mo; i++) {
                     showMinMax(spiralka_odl_po,i);
